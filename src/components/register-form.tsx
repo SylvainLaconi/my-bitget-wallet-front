@@ -1,26 +1,36 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { login } from '../api/auth';
+import { useMutation } from '@tanstack/react-query';
+import { register } from '../api/auth';
 
-const loginSchema = z.object({
-  email: z.string().email({ message: 'Email invalide' }),
-  password: z.string().min(1, { message: 'Mot de passe requis' }),
-});
+const registerSchema = z
+  .object({
+    email: z.string().email({ message: 'Email invalide' }),
+    password: z.string().min(1, { message: 'Mot de passe requis' }),
+    passwordConfirm: z
+      .string()
+      .min(1, { message: 'Confirmer le mot de passe requis' }),
+  })
+  .refine((data) => data.password === data.passwordConfirm, {
+    message: 'Les mots de passe ne correspondent pas',
+    path: ['passwordConfirm'],
+  });
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const [formError, setFormError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
-      return await login(data.email, data.password);
+    mutationFn: async (data: {
+      email: string;
+      password: string;
+      passwordConfirm: string;
+    }) => {
+      return await register(data.email, data.password);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['me'] });
-      navigate('/app/dashboard');
+      navigate('/auth/login');
     },
     onError: (err: unknown) => {
       if (err instanceof Error) setFormError(err.message);
@@ -36,10 +46,10 @@ export default function LoginForm() {
     const formData = {
       email: form.email.value,
       password: form.password.value,
+      passwordConfirm: form.passwordConfirm.value,
     };
 
-    // Validation front avec Zod
-    const parse = loginSchema.safeParse(formData);
+    const parse = registerSchema.safeParse(formData);
     if (!parse.success) {
       setFormError('Formulaire invalide');
       return;
@@ -55,33 +65,37 @@ export default function LoginForm() {
     >
       <div className="flex flex-col gap-4">
         <input
-          name="email"
           type="email"
+          name="email"
           placeholder="Email"
           className="input"
         />
         <input
-          name="password"
           type="password"
+          name="password"
           placeholder="Mot de passe"
           className="input"
         />
-
+        <input
+          type="password"
+          name="passwordConfirm"
+          placeholder="Confirmer le mot de passe"
+          className="input"
+        />
         <div className="h-4 flex justify-center">
           {formError && <div className="text-red-600 text-sm">{formError}</div>}
         </div>
       </div>
-
       <div className="flex flex-col gap-4">
         <button type="submit" disabled={mutation.isPending} className="btn">
-          {mutation.isPending ? 'Connexion…' : 'Se connecter'}
+          {mutation.isPending ? 'Création…' : 'Créer un compte'}
         </button>
         <button
           className="btn-secondary"
           type="button"
-          onClick={() => navigate('/auth/register')}
+          onClick={() => navigate('/auth/login')}
         >
-          Créer un compte
+          Se connecter
         </button>
       </div>
     </form>

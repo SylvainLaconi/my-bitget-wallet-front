@@ -1,13 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import { useMe } from '../contexts/me-context';
+import { useQueryClient } from '@tanstack/react-query';
+import { logout } from '../api/auth';
 
 export default function LogoutButton() {
-  const { logout } = useMe();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login');
+    queryClient.setQueryData(['me'], null);
+    queryClient.invalidateQueries({ queryKey: ['me'] });
+
+    navigate('/auth/login', { replace: true });
   };
 
   return (

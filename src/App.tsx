@@ -1,27 +1,17 @@
-import './App.css'
-import { Routes, Route, Navigate } from 'react-router-dom'
-import LoginPage from './pages/login.page'
-import PrivateRoute from './routes/private-route'
-import DashboardPage from './pages/dashboard.page'
+import './App.css';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
+import PrivateRoutes from './routes/private-routes';
+import { PublicRoutes } from './routes/public-routes';
 
 function App() {
   return (
-    <>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-
-        <Route
-        path="/dashboard"
-        element={
-          <PrivateRoute>
-            <DashboardPage />
-          </PrivateRoute>
-        }
-      />
-      <Route path="*" element={<Navigate to="/dashboard" />} />
-      </Routes>
-    </>
-  )
+    <Routes>
+      <Route path="/auth/*" element={<PublicRoutes />} />
+      <Route path="/app/*" element={<PrivateRoutes />} />
+      <Route path="*" element={<Navigate to="/auth/login" replace />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
