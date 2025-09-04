@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { me } from '../api/auth';
+import { fetcherWithAuth } from '../api/auth';
 
 export function useMeQuery() {
   return useQuery({
     queryKey: ['me'],
-    queryFn: me,
+    queryFn: () =>
+      fetcherWithAuth(`${import.meta.env.VITE_API_URL}/api/auth/me`),
     retry: false,
   });
 }
