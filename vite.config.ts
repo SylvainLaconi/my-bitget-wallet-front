@@ -46,9 +46,9 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:4000',
+        target: process.env.VITE_API_URL,
         changeOrigin: true,
-        secure: false,
+        secure: process.env.NODE_ENV === 'production',
         // rewrite cookie domain si besoin
         cookieDomainRewrite: 'localhost',
       },
