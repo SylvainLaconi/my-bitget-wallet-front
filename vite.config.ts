@@ -34,6 +34,11 @@ export default defineConfig({
             type: 'image/png',
           },
           {
+            src: 'my-bitget-wallet-logo-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
             src: 'my-bitget-wallet-logo-256x256.png',
             sizes: '256x256',
             type: 'image/png',
