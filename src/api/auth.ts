@@ -32,6 +32,8 @@ export async function logout() {
 
 export async function me() {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
   });
 
