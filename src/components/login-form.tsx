@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { login } from '../api/auth';
+import useLogin from '../hooks/use-login-mutation';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Email invalide' }),
@@ -12,19 +11,10 @@ const loginSchema = z.object({
 export default function LoginForm() {
   const [formError, setFormError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
-      return await login(data.email, data.password);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['me'] });
-      navigate('/app/dashboard');
-    },
-    onError: (err: unknown) => {
-      if (err instanceof Error) setFormError(err.message);
-      else setFormError('Une erreur inconnue est survenue');
+  const loginMutation = useLogin({
+    callbackError: (error) => {
+      setFormError(error);
     },
   });
 
@@ -38,14 +28,13 @@ export default function LoginForm() {
       password: form.password.value,
     };
 
-    // Validation front avec Zod
     const parse = loginSchema.safeParse(formData);
     if (!parse.success) {
       setFormError('Formulaire invalide');
       return;
     }
 
-    mutation.mutate(formData);
+    loginMutation.mutate(formData);
   };
 
   return (
@@ -73,8 +62,12 @@ export default function LoginForm() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <button type="submit" disabled={mutation.isPending} className="btn">
-          {mutation.isPending ? 'Connexion…' : 'Se connecter'}
+        <button
+          type="submit"
+          disabled={loginMutation.isPending}
+          className="btn"
+        >
+          {loginMutation.isPending ? 'Connexion…' : 'Se connecter'}
         </button>
         <button
           className="btn-secondary"

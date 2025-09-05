@@ -1,11 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useMeQuery } from '../hooks/use-me-query';
 
 import DashboardPage from '../pages/dashboard.page';
-// ajoute ici tes autres pages privées
+import useMe from '../hooks/use-me-query';
 
 function PrivateRoutes() {
-  const { data: me, isLoading } = useMeQuery();
+  const { data: me, isLoading } = useMe();
 
   if (isLoading) {
     return <div>Loading...</div>;

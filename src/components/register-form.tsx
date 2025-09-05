@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-import { useMutation } from '@tanstack/react-query';
-import { register } from '../api/auth';
+import useRegister from '../hooks/use-register-mutation';
 
 const registerSchema = z
   .object({
@@ -21,20 +20,9 @@ export default function RegisterForm() {
   const [formError, setFormError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const mutation = useMutation({
-    mutationFn: async (data: {
-      email: string;
-      password: string;
-      passwordConfirm: string;
-    }) => {
-      return await register(data.email, data.password);
-    },
-    onSuccess: () => {
-      navigate('/auth/login');
-    },
-    onError: (err: unknown) => {
-      if (err instanceof Error) setFormError(err.message);
-      else setFormError('Une erreur inconnue est survenue');
+  const registerMutation = useRegister({
+    callbackError: (error) => {
+      setFormError(error);
     },
   });
 
@@ -55,7 +43,7 @@ export default function RegisterForm() {
       return;
     }
 
-    mutation.mutate(formData);
+    registerMutation.mutate(formData);
   };
 
   return (
@@ -87,8 +75,12 @@ export default function RegisterForm() {
         </div>
       </div>
       <div className="flex flex-col gap-4">
-        <button type="submit" disabled={mutation.isPending} className="btn">
-          {mutation.isPending ? 'Création…' : 'Créer un compte'}
+        <button
+          type="submit"
+          disabled={registerMutation.isPending}
+          className="btn"
+        >
+          {registerMutation.isPending ? 'Création…' : 'Créer un compte'}
         </button>
         <button
           className="btn-secondary"

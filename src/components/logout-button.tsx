@@ -1,22 +1,19 @@
-import { useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
-import { logout } from '../api/auth';
+import useLogout from '../hooks/use-logout-mutation';
 
 export default function LogoutButton() {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const logoutMutation = useLogout();
 
-  const handleLogout = async () => {
-    await logout();
-    queryClient.setQueryData(['me'], null);
-    queryClient.invalidateQueries({ queryKey: ['me'] });
-
-    navigate('/auth/login', { replace: true });
+  const handleLogout = () => {
+    logoutMutation.mutate();
   };
 
   return (
-    <button className="btn" onClick={handleLogout}>
-      Se déconnecter
+    <button
+      className="btn"
+      onClick={handleLogout}
+      disabled={logoutMutation.isPending}
+    >
+      {logoutMutation.isPending ? 'Se déconnecter…' : 'Se déconnecter'}
     </button>
   );
 }
