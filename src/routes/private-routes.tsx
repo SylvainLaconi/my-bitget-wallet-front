@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 import DashboardPage from '../pages/dashboard.page';
 import useMe from '../hooks/use-me-query';
+import PrivateLayout from '../layouts/private-layout';
 
 function PrivateRoutes() {
   const { data: me, isLoading } = useMe();
@@ -16,8 +17,9 @@ function PrivateRoutes() {
 
   return (
     <Routes>
-      <Route path="dashboard" element={<DashboardPage />} />
-      {/* autres routes privées */}
+      <Route element={<PrivateLayout />}>
+        <Route path="dashboard" element={<DashboardPage />} />
+      </Route>
     </Routes>
   );
 }

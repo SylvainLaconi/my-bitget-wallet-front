@@ -13,7 +13,7 @@ export default function LogoutButton() {
       onClick={handleLogout}
       disabled={logoutMutation.isPending}
     >
-      {logoutMutation.isPending ? 'Se déconnecter…' : 'Se déconnecter'}
+      {logoutMutation.isPending ? 'Déconnexion…' : 'Déconnexion'}
     </button>
   );
 }
