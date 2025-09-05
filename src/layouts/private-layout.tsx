@@ -4,7 +4,7 @@ import LogoutButton from '../components/logout-button';
 export default function PrivateLayout() {
   return (
     <div className="flex flex-col h-screen w-screen px-4 pb-12 pt-20 gap-12 relative">
-      <header className="fixed top-0 left-0 right-0 px-4 py-4 flex justify-between items-center">
+      <header className="fixed top-0 left-0 right-0 px-4 py-4 flex justify-between items-center bg-background">
         <div className="flex items-center gap-1">
           <img
             src="/my-bitget-wallet-logo-48x48.png"
