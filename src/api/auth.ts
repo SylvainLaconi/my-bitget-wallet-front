@@ -12,22 +12,13 @@ export async function login(email: string, password: string) {
     throw new Error(data.error || 'Email ou mot de passe incorrect');
   }
 
+  localStorage.setItem('accessToken', data.accessToken);
+
   return data;
 }
 
 export async function logout() {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/logout`, {
-    method: 'POST',
-    credentials: 'include',
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(data.error || 'Erreur lors de la déconnexion');
-  }
-
-  return data;
+  localStorage.removeItem('accessToken');
 }
 
 export async function me() {
@@ -65,25 +56,25 @@ export async function register(email: string, password: string) {
   return data;
 }
 
-async function refreshToken() {
-  const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/api/auth/refresh-token`,
-    {
-      method: 'GET',
-      credentials: 'include',
-    }
-  );
+// async function refreshToken() {
+//   const res = await fetch(
+//     `${import.meta.env.VITE_API_URL}/api/auth/refresh-token`,
+//     {
+//       method: 'GET',
+//       credentials: 'include',
+//     }
+//   );
 
-  const data = await res.json();
+//   const data = await res.json();
 
-  if (!res.ok) {
-    throw new Error(data.error || 'Erreur lors de la récupération du token');
-  }
+//   if (!res.ok) {
+//     throw new Error(data.error || 'Erreur lors de la récupération du token');
+//   }
 
-  localStorage.setItem('accessToken', data.accessToken);
+//   localStorage.setItem('accessToken', data.accessToken);
 
-  return data.accessToken;
-}
+//   return data.accessToken;
+// }
 
 export async function fetcherWithAuth(
   input: RequestInfo | URL,
@@ -103,15 +94,15 @@ export async function fetcherWithAuth(
 
   let res = await fetch(input, newInit);
 
-  if (res.status === 401) {
-    accessToken = await refreshToken();
-    newInit.headers = {
-      ...(newInit.headers || {}),
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    };
-    res = await fetch(input, newInit);
-  }
+  // if (res.status === 401) {
+  //   accessToken = await refreshToken();
+  //   newInit.headers = {
+  //     ...(newInit.headers || {}),
+  //     Authorization: `Bearer ${accessToken}`,
+  //     'Content-Type': 'application/json',
+  //   };
+  //   res = await fetch(input, newInit);
+  // }
 
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
