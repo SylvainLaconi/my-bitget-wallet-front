@@ -7,7 +7,7 @@
   --color-secondary-hover: #0396b3;
   --color-border: #8e8e92;
   --color-text-black: #000000;
-  --bg-background: #0d0e0e;
+  --color-background: #0d0e0e;
   --font-family: Pulse, system-ui, Avenir, Helvetica, Arial, sans-serif;
 
   --font-size-sm: 12px;
@@ -118,7 +118,7 @@
 :root {
   color: var(--color-secondary);
   font-family: var(--font-family);
-  background-color: var(--bg-background);
+  background-color: var(--color-background);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-normal);

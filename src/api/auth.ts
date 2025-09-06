@@ -1,5 +1,6 @@
 import { fetcher } from './fetcher';
 
+// LOGIN
 export async function login(email: string, password: string) {
   const data = await fetcher(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
     method: 'POST',
@@ -9,14 +10,17 @@ export async function login(email: string, password: string) {
   return data;
 }
 
+// LOGOUT
 export async function logout() {
   localStorage.removeItem('accessToken');
 }
 
+// ME
 export async function me() {
   return fetcher(`${import.meta.env.VITE_API_URL}/api/auth/me`);
 }
 
+// REGISTER
 export async function register(email: string, password: string) {
   const data = await fetcher(
     `${import.meta.env.VITE_API_URL}/api/auth/register`,
@@ -28,23 +32,3 @@ export async function register(email: string, password: string) {
 
   return data;
 }
-
-// async function refreshToken() {
-//   const res = await fetch(
-//     `${import.meta.env.VITE_API_URL}/api/auth/refresh-token`,
-//     {
-//       method: 'GET',
-//       credentials: 'include',
-//     }
-//   );
-
-//   const data = await res.json();
-
-//   if (!res.ok) {
-//     throw new Error(data.error || 'Erreur lors de la récupération du token');
-//   }
-
-//   localStorage.setItem('accessToken', data.accessToken);
-
-//   return data.accessToken;
-// }
