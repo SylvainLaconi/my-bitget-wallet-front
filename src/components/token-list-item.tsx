@@ -37,7 +37,7 @@ export default function TokenListItem({ coin }: TokenListItemProps) {
           </span>
         </div>
 
-        <div className="flex flex-col items-start md:items-end gap-1">
+        <div className="flex flex-col items-start gap-1">
           <span className="text-sm md:text-base">
             {`$${formatPrice(8, coin.lastPrice)}`}
           </span>
