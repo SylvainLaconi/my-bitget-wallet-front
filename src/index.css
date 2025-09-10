@@ -5,9 +5,10 @@
   --color-primary-hover: #0396b3;
   --color-secondary: #ffffff;
   --color-secondary-hover: #0396b3;
-  --color-border: #27282b;
-  --color-text-black: #000000;
-  --color-background: #0d0e0e;
+  --color-border: #dedfd0;
+  --color-text: #151517;
+  --color-background: #ffffff;
+  --color-text-secondary: #666666;
   --font-family: Pulse, system-ui, Avenir, Helvetica, Arial, sans-serif;
 
   --font-size-sm: 12px;
@@ -51,6 +52,20 @@
   --border-radius-2xl: 32px;
   --border-radius-3xl: 40px;
   --border-radius-4xl: 48px;
+
+  --text-xs: 8px;
+  --text-sm: 10px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 28px;
+  --text-4xl: 32px;
+  --text-5xl: 36px;
+  --text-6xl: 40px;
+  --text-7xl: 44px;
+  --text-8xl: 48px;
+  --text-9xl: 52px;
 }
 
 @layer components {
@@ -116,7 +131,7 @@
 }
 
 :root {
-  color: var(--color-secondary);
+  color: var(--color-text);
   font-family: var(--font-family);
   background-color: var(--color-background);
   font-size: var(--font-size-base);

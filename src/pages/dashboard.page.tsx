@@ -11,7 +11,7 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-4 w-full">
       <h1 className="text-2xl font-bold">Dashboard</h1>
-      <div className="flex flex-col gap-0 w-full">
+      <div className="flex flex-col gap-0 w-full md:pr-4">
         {coins.map((coin) => (
           <TokenListItem key={coin.tokenId} coin={coin} />
         ))}
