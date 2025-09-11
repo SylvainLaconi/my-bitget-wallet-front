@@ -11,11 +11,32 @@ type WalletCoin = {
   lastPrice?: number;
   change24hPercent?: number;
   earnQuantity: number;
+  orderQuantity: number;
   valueUSD?: number;
 };
 
 export function useWalletStream() {
   const [coins, setCoins] = useState<WalletCoin[]>([]);
+  const [totalValue, setTotalValue] = useState<number>(0);
+  const [totalEarnValue, setTotalEarnValue] = useState<number>(0);
+  const [totalFrozenValue, setTotalFrozenValue] = useState<number>(0);
+  const [totalAvailableValue, setTotalAvailableValue] = useState<number>(0);
+
+  useEffect(() => {
+    setTotalValue(coins.reduce((acc, c) => acc + (c.valueUSD || 0), 0));
+    setTotalEarnValue(
+      coins.reduce(
+        (acc, c) => acc + (c.earnQuantity * (c.lastPrice || 0) || 0),
+        0
+      )
+    );
+    setTotalFrozenValue(
+      coins.reduce((acc, c) => acc + (c.frozen * (c.lastPrice || 0) || 0), 0)
+    );
+    setTotalAvailableValue(
+      coins.reduce((acc, c) => acc + (c.available * (c.lastPrice || 0) || 0), 0)
+    );
+  }, [coins]);
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -30,13 +51,18 @@ export function useWalletStream() {
     // Snapshot initial
     eventSource.addEventListener('snapshot', (event) => {
       const data: WalletCoin[] = JSON.parse((event as MessageEvent).data);
+
       setCoins(
         data
           .map((c) => ({
             ...c,
             lastPrice: 0,
             change24hPercent: 0,
-            valueUSD: 0,
+            valueUSD:
+              c.token.ticker.toUpperCase() === 'USDT'
+                ? c.available + c.frozen + c.locked + c.earnQuantity
+                : 0,
+            orderQuantity: 0,
           }))
           .filter(filterNonZero)
       );
@@ -49,21 +75,26 @@ export function useWalletStream() {
       setCoins((prev) => {
         const index = prev.findIndex((c) => c.tokenId === data.tokenId);
 
+        const valueUSD =
+          data.token.ticker.toUpperCase() === 'USDT'
+            ? data.available + data.frozen + data.locked + data.earnQuantity
+            : prev[index]?.lastPrice
+              ? parseFloat(
+                  (
+                    prev[index].lastPrice *
+                    (data.available +
+                      data.frozen +
+                      data.locked +
+                      data.earnQuantity)
+                  ).toFixed(2)
+                )
+              : 0;
+
         const updatedCoin: WalletCoin = {
           ...data,
           lastPrice: prev[index]?.lastPrice || 0,
           change24hPercent: prev[index]?.change24hPercent || 0,
-          valueUSD: prev[index]?.lastPrice
-            ? parseFloat(
-                (
-                  prev[index].lastPrice *
-                  (data.available +
-                    data.frozen +
-                    data.locked +
-                    data.earnQuantity)
-                ).toFixed(2)
-              )
-            : 0,
+          valueUSD,
         };
 
         let newCoins;
@@ -105,6 +136,19 @@ export function useWalletStream() {
       );
     });
 
+    // Update ordre
+    eventSource.addEventListener('order', (event) => {
+      const data = JSON.parse((event as MessageEvent).data);
+      console.log('order', data);
+      setCoins((prev) =>
+        prev.map((c) =>
+          c.tokenId === data.tokenId
+            ? { ...c, orderQuantity: data.orderQuantity }
+            : c
+        )
+      );
+    });
+
     eventSource.onerror = (err) => {
       console.error('SSE error', err);
       eventSource.close();
@@ -113,5 +157,11 @@ export function useWalletStream() {
     return () => eventSource.close();
   }, []);
 
-  return coins;
+  return {
+    coins,
+    totalValue,
+    totalEarnValue,
+    totalFrozenValue,
+    totalAvailableValue,
+  };
 }

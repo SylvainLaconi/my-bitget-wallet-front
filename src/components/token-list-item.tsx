@@ -63,6 +63,14 @@ export default function TokenListItem({ coin }: TokenListItemProps) {
         </div>
         <div className="flex flex-row items-center justify-between w-full md:flex-col gap-1">
           <span className="text-xs md:text-sm text-text-secondary md:text-right w-full">
+            Bloqué
+          </span>
+          <span className="text-sm md:text-base text-right w-full">
+            {formatPrice(8, coin.frozen)}
+          </span>
+        </div>
+        <div className="flex flex-row items-center justify-between w-full md:flex-col gap-1">
+          <span className="text-xs md:text-sm text-text-secondary md:text-right w-full">
             Épargne
           </span>
           <span className="text-sm md:text-base text-right w-full">
@@ -75,7 +83,7 @@ export default function TokenListItem({ coin }: TokenListItemProps) {
             Total
           </span>
           <span className="text-sm md:text-base text-right w-full font-bold">
-            {formatPrice(8, coin.available + coin.earnQuantity)}
+            {formatPrice(8, coin.available + coin.earnQuantity + coin.frozen)}
           </span>
         </div>
       </div>
