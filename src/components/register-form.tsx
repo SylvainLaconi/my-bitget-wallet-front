@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import useRegister from '../hooks/use-register-mutation';
+import Button from './button';
 
 const registerSchema = z
   .object({
@@ -75,20 +76,12 @@ export default function RegisterForm() {
         </div>
       </div>
       <div className="flex flex-col gap-4">
-        <button
-          type="submit"
-          disabled={registerMutation.isPending}
-          className="btn"
-        >
+        <Button isLoading={registerMutation.isPending}>
           {registerMutation.isPending ? 'Création…' : 'Créer un compte'}
-        </button>
-        <button
-          className="btn-secondary"
-          type="button"
-          onClick={() => navigate('/auth/login')}
-        >
+        </Button>
+        <Button variant="secondary" onClick={() => navigate('/auth/login')}>
           Se connecter
-        </button>
+        </Button>
       </div>
     </form>
   );

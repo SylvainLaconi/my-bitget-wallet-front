@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import useLogin from '../hooks/use-login-mutation';
+import Button from './button';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Email invalide' }),
@@ -62,20 +63,12 @@ export default function LoginForm() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <button
-          type="submit"
-          disabled={loginMutation.isPending}
-          className="btn"
-        >
+        <Button isLoading={loginMutation.isPending}>
           {loginMutation.isPending ? 'Connexion…' : 'Se connecter'}
-        </button>
-        <button
-          className="btn-secondary"
-          type="button"
-          onClick={() => navigate('/auth/register')}
-        >
+        </Button>
+        <Button variant="secondary" onClick={() => navigate('/auth/register')}>
           Créer un compte
-        </button>
+        </Button>
       </div>
     </form>
   );

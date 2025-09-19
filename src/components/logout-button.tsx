@@ -1,4 +1,6 @@
 import useLogout from '../hooks/use-logout-mutation';
+import Button from './button';
+import { FaSignOutAlt } from 'react-icons/fa';
 
 export default function LogoutButton() {
   const logoutMutation = useLogout();
@@ -8,12 +10,14 @@ export default function LogoutButton() {
   };
 
   return (
-    <button
-      className="btn"
+    <Button
       onClick={handleLogout}
-      disabled={logoutMutation.isPending}
+      isLoading={logoutMutation.isPending}
+      size="small"
+      variant="secondary"
+      icon={<FaSignOutAlt />}
     >
-      {logoutMutation.isPending ? 'Déconnexion…' : 'Déconnexion'}
-    </button>
+      Déconnexion
+    </Button>
   );
 }
