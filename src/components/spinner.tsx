@@ -1,3 +1,5 @@
+import { cn } from '../utils/cn';
+
 interface SpinnerProps {
   size?: 'small' | 'large';
 }
@@ -5,7 +7,10 @@ interface SpinnerProps {
 export default function Spinner({ size = 'large' }: SpinnerProps) {
   return (
     <svg
-      className={`mr-2 -ml-1 size-${size === 'small' ? '3' : '4'} animate-spin`}
+      className={cn(
+        'mr-2 -ml-1 animate-spin',
+        size === 'small' ? 'h-3 w-3' : 'h-4 w-4'
+      )}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

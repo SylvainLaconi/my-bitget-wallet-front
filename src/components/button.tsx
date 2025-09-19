@@ -27,7 +27,7 @@ export default function Button({
     >
       {isLoading && <Spinner size={size} />}
       {icon && !isLoading && <span className="mr-2">{icon}</span>}
-      {children && children}
+      {children}
     </button>
   );
 }
