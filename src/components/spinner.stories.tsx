@@ -27,3 +27,16 @@ export const Small: Story = {
     size: 'small',
   },
 };
+
+export const Primary: Story = {
+  args: {
+    size: 'large',
+  },
+  decorators: [
+    (Story) => (
+      <div className="text-primary">
+        <Story />
+      </div>
+    ),
+  ],
+};
