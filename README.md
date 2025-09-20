@@ -167,7 +167,7 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 - [Documentation Vite](https://vitejs.dev/)
 - [Documentation Tailwind CSS](https://tailwindcss.com/)
 - [Documentation Storybook](https://storybook.js.org/)
-- [API Bitget](https://bitgetlimited.github.io/apidoc/en/spot/)
+- [API Bitget](https://www.bitgetapp.com/api-doc/common/intro)
 
 ---
 
