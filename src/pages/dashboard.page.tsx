@@ -1,7 +1,20 @@
-import { useWalletStream } from '../hooks/use-wallet-stream';
+import {
+  useWalletStream,
+  type FormattedWalletCoin,
+} from '../hooks/use-wallet-stream';
 import TokenListItem from '../components/token-list-item';
+import { useState } from 'react';
+import DashboardSorter from '../components/dashboard-sorter';
+import DashboardSummary from '../components/dashboard-summary';
+
+type SortType = keyof FormattedWalletCoin;
+
+type SortOrder = 'asc' | 'desc';
 
 export default function DashboardPage() {
+  const [sortType, setSortType] = useState<SortType>('ticker');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+
   const {
     coins,
     totalValue,
@@ -16,60 +29,36 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="flex items-center gap-4">
-        <div className="flex flex-col gap-0 items-end">
-          <span className="md:text-sm text-xs text-text-secondary">
-            Valeur totale des actifs
-          </span>
-          <div className="flex flex-row items-center gap-1">
-            <span className="md:text-4xl text-xl font-bold text-right w-full">
-              {totalValue.toFixed(0)}
-            </span>
-            <span className="text-xs md:text-sm">USDT</span>
-          </div>
-        </div>
+      <DashboardSummary
+        totalValue={totalValue}
+        totalEarnValue={totalEarnValue}
+        totalFrozenValue={totalFrozenValue}
+        totalAvailableValue={totalAvailableValue}
+      />
 
-        <div className="flex flex-col gap-0">
-          <span className="md:text-sm text-xs text-text-secondary text-right w-full">
-            Actifs épargnés
-          </span>
-          <div className="flex flex-row items-center gap-1">
-            <span className="md:text-4xl text-xl font-bold text-right w-full">
-              {totalEarnValue.toFixed(0)}
-            </span>
-            <span className="text-xs md:text-sm">USDT</span>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-0">
-          <span className="md:text-sm text-xs text-text-secondary text-right w-full">
-            Actifs bloqués
-          </span>
-          <div className="flex flex-row items-center gap-1">
-            <span className="md:text-4xl text-xl font-bold text-right w-full">
-              {totalFrozenValue.toFixed(0)}
-            </span>
-            <span className="text-xs md:text-sm">USDT</span>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-0">
-          <span className="md:text-sm text-xs text-text-secondary text-right w-full">
-            Actifs disponibles
-          </span>
-          <div className="flex flex-row items-center gap-1">
-            <span className="md:text-4xl text-xl font-bold text-right w-full">
-              {totalAvailableValue.toFixed(0)}
-            </span>
-            <span className="text-xs md:text-sm">USDT</span>
-          </div>
-        </div>
-      </div>
+      <DashboardSorter setSortType={setSortType} setSortOrder={setSortOrder} />
 
       <div className="flex flex-col gap-0 w-full md:pr-4">
-        {coins.map((coin) => (
-          <TokenListItem key={coin.tokenId} coin={coin} />
-        ))}
+        {coins
+          .sort((a, b) => {
+            const aValue = a[sortType];
+            const bValue = b[sortType];
+
+            if (typeof aValue === 'number' && typeof bValue === 'number') {
+              return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+            }
+
+            if (typeof aValue === 'string' && typeof bValue === 'string') {
+              return sortOrder === 'asc'
+                ? aValue.localeCompare(bValue)
+                : bValue.localeCompare(aValue);
+            }
+
+            return 0;
+          })
+          .map((coin) => (
+            <TokenListItem key={coin.tokenId} coin={coin} />
+          ))}
       </div>
     </div>
   );

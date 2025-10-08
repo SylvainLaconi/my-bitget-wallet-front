@@ -167,6 +167,19 @@
     font-size: var(--font-size-base);
   }
 
+  .select-wrapper {
+    position: relative;
+  }
+
+  .select-wrapper::after {
+    position: absolute;
+    right: 12px;
+    top: 0%;
+    transform: translateY(-100%);
+    pointer-events: none;
+    color: #555;
+  }
+
   .typography-h1 {
     font-size: var(--text-6xl);
     font-weight: var(--font-weight-black);

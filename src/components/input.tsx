@@ -12,7 +12,6 @@ export default function Input({
   type,
   name,
   placeholder,
-
   size = 'large',
 }: InputProps) {
   return (

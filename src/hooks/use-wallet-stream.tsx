@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-type WalletCoin = {
+export type WalletCoin = {
   tokenId: string;
   token: { name: string; ticker: string };
   available: number;
@@ -15,8 +15,24 @@ type WalletCoin = {
   valueUSD?: number;
 };
 
+export type FormattedWalletCoin = {
+  tokenId: string;
+  name: string;
+  ticker: string;
+  available: number;
+  frozen: number;
+  locked: number;
+  limitAvailable: number;
+  uTime: number;
+  lastPrice?: number;
+  change24hPercent?: number;
+  earnQuantity: number;
+  orderQuantity: number;
+  valueUSD?: number;
+};
+
 export function useWalletStream() {
-  const [coins, setCoins] = useState<WalletCoin[]>([]);
+  const [coins, setCoins] = useState<FormattedWalletCoin[]>([]);
   const [totalValue, setTotalValue] = useState<number>(0);
   const [totalEarnValue, setTotalEarnValue] = useState<number>(0);
   const [totalFrozenValue, setTotalFrozenValue] = useState<number>(0);
@@ -45,7 +61,7 @@ export function useWalletStream() {
     const url = `${import.meta.env.VITE_API_URL}/stream?token=${token}`;
     const eventSource = new EventSource(url);
 
-    const filterNonZero = (c: WalletCoin) =>
+    const filterNonZero = (c: FormattedWalletCoin) =>
       c.available + c.frozen + c.locked + c.earnQuantity > 0;
 
     // Snapshot initial
@@ -63,6 +79,8 @@ export function useWalletStream() {
                 ? c.available + c.frozen + c.locked + c.earnQuantity
                 : 0,
             orderQuantity: 0,
+            name: c.token.name,
+            ticker: c.token.ticker,
           }))
           .filter(filterNonZero)
       );
@@ -90,11 +108,13 @@ export function useWalletStream() {
                 )
               : 0;
 
-        const updatedCoin: WalletCoin = {
+        const updatedCoin: FormattedWalletCoin = {
           ...data,
           lastPrice: prev[index]?.lastPrice || 0,
           change24hPercent: prev[index]?.change24hPercent || 0,
           valueUSD,
+          name: data.token.name,
+          ticker: data.token.ticker,
         };
 
         let newCoins;
@@ -118,7 +138,7 @@ export function useWalletStream() {
       setCoins((prev) =>
         prev
           .map((c) =>
-            c.token.ticker.toUpperCase() + 'USDT' === data.instId
+            c.ticker.toUpperCase() + 'USDT' === data.instId
               ? {
                   ...c,
                   lastPrice: parseFloat(data.lastPr),
