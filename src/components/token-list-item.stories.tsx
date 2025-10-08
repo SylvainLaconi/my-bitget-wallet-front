@@ -1,5 +1,6 @@
 import TokenListItem from './token-list-item';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { FormattedWalletCoin } from '../hooks/use-wallet-stream';
 
 const meta = {
   title: 'Components/TokenListItem',
@@ -13,7 +14,8 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     coin: {
-      token: { name: 'Token', ticker: 'TOKEN' },
+      name: 'Token',
+      ticker: 'TOKEN',
       tokenId: '1',
       available: 100,
       frozen: 10,
@@ -24,7 +26,7 @@ export const Default: Story = {
       valueUSD: 100,
       lastPrice: 1.23,
       change24hPercent: 10.23,
-    },
+    } as FormattedWalletCoin,
   },
 };
 
@@ -37,7 +39,8 @@ export const Mobile: Story = {
   },
   args: {
     coin: {
-      token: { name: 'Token', ticker: 'TOKEN' },
+      name: 'Token',
+      ticker: 'TOKEN',
       tokenId: '1',
       available: 100,
       frozen: 10,
@@ -45,9 +48,10 @@ export const Mobile: Story = {
       limitAvailable: 70,
       uTime: 1716235200,
       earnQuantity: 10,
+      orderQuantity: 0,
       valueUSD: 100,
       lastPrice: 1.23,
       change24hPercent: 10.23,
-    },
+    } as FormattedWalletCoin,
   },
 };
